@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--    enable @Transactional and Transaction Management-->
+    <tx:annotation-driven proxy-target-class="true"/>
+
+    <!--    To configure hibernate we will need at least 2 beans (datasource and sessionfactory)-->
+    <!--    To include transaction management then 3 beans (datasource, sessionfactory, transactionmanager)-->
+
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+        <property name="jdbcUrl" value="jdbc:postgresql://fitnessdb.cd9wve13vrr0.us-east-2.rds.amazonaws.com:5432/project2"/>
+        <property name="username" value="mastersplinter"/>
+        <property name="password" value="leonardo"/>
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="com.ex"/>
+        <property name="hibernateProperties">
+
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">true</prop>
+            </props>
+
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+
+</beans>
